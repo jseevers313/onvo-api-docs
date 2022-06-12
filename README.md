@@ -39,14 +39,43 @@ Todos las solicitudes al API deben de hacerse mediante HTTPS. Solicitudes median
 
 Este objecto representa un cliente de tu comercio. Te permite crear cargos recurrentes y rastrear pagos que pertenecen al mismo cliente. 
 
-Endpoints
-: POST   /v1/customers
-: GET    /v1/customers/:id
-: POST   /v1/customers/:id
-: DELETE /v1/customers/:id
-: GET    /v1/customers
+### Endpoints
+POST   /v1/customers
+GET    /v1/customers/:id
+POST   /v1/customers/:id
+DELETE /v1/customers/:id
+GET    /v1/customers
 
-## El objecto Cliente
+### El objecto Cliente
+
+#### Atributos
+
+___
+##### id _string_
+Identificador único del objeto.
+___
+##### address _hash_
+La dirección del cliente.
+
+**Atributos:**
+###### address.city _string_
+Nombre de ciudad o pueblo.
+###### address.country _string_
+El código de país en dos caracteres (ISO 3166-1 alpha-2).
+###### address.line1 _string_
+Primera línea de la dirección. (Ej: Calle, nombre de empresa).
+###### address.line2 _string_
+Segunda línea de la dirección. (Ej: Edificio, apartamento, número de casa).
+Nombre de ciudad o pueblo.
+###### address.postalCode _string_
+Código postal o código ZIP.
+###### address.state _string_
+Estado, provincia o región.
+___
+##### description _string_
+Texto arbitrario adjunto al objecto. Comúnmente útil para mostrar a usuarios
+___
+
 
 ```json 
 {
@@ -62,6 +91,7 @@ Endpoints
   "createdAt": "2022-06-12T21:21:10.587Z",
   "description": "string",
   "email": "string",
+  "mode": "string",
   "name": "string",
   "phone": "string",
   "shipping": {
