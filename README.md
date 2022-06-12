@@ -66,16 +66,53 @@ El código de país en dos caracteres (ISO 3166-1 alpha-2).
 Primera línea de la dirección. (Ej: Calle, nombre de empresa).
 ###### address.line2 _string_
 Segunda línea de la dirección. (Ej: Edificio, apartamento, número de casa).
-Nombre de ciudad o pueblo.
 ###### address.postalCode _string_
 Código postal o código ZIP.
 ###### address.state _string_
 Estado, provincia o región.
 ___
-##### description _string_
-Texto arbitrario adjunto al objecto. Comúnmente útil para mostrar a usuarios
+##### createdAt _datetime_
+Fecha y hora en la que fue creado el objecto en UTC. 
 ___
+##### description _string_
+Texto arbitrario adjunto al objecto. Comúnmente útil para mostrar a usuarios.
+___
+##### email _string_
+La dirección de correo electrónico del cliente.
+___
+##### mode _string_
+El modo en el que existen los datos del objecto. Ya sea `test` o `live`.
+___
+##### name _string_
+El nombre completo del cliente
+___
+##### phone _string_
+El número de teléfono del cliente, incluyendo código de área (Ej: +50688880000)
+___
+##### shipping _hash_
+La dirección de entrega a domicilio del cliente.
 
+**Atributos:**
+###### shipping.address.city _string_
+Nombre de ciudad o pueblo.
+###### shipping.address.country _string_
+El código de país en dos caracteres (ISO 3166-1 alpha-2).
+###### shipping.address.line1 _string_
+Primera línea de la dirección. (Ej: Calle, nombre de empresa).
+###### shipping.address.line2 _string_
+Segunda línea de la dirección. (Ej: Edificio, apartamento, número de casa).
+###### shipping.address.postalCode _string_
+Código postal o código ZIP.
+###### shipping.address.state _string_
+Estado, provincia o región.
+###### shipping.name _string_
+Nombre del cliente.
+###### shipping.phone _string_
+Teléfono del cliente (incluyendo extensión).
+___
+##### updatedAt _datetime_
+Fecha y hora en la que fue actualizado por última vez el objecto en UTC. 
+___
 
 ```json 
 {
