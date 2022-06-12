@@ -205,6 +205,55 @@ Teléfono del cliente (incluyendo extensión).
 **Retorna:**
 Retorna el objeto de Cliente, si la creación fue satisfactoria. Retorna un error si los parámetros son inválidos (Ej: Enviando `Costa Rica` en lugar de `CR`, para el parámetro de `address.country`).
 
+```
+POST /v1/customers
+Authorization: Bearer onvo_test_publishable_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcduXYTRtsuKRc4d1PXEh33Ju9RZRXGJkX0KsRV5-F540ciRCQosQ
+```
+```json 
+{ 
+  "address": {
+    "country": "CR",
+  },
+  "description": "Cliente creado para demostración",
+  "email": "email@onvopay.com",
+  "name": "Nombre del cliente"
+}
+```
+`Respuesta:`
+```json 
+{
+  "id": "cl40muorw00493ndp0okzk2g3",
+  "address": {
+    "city": null,
+    "country": "CR",
+    "line1": null,
+    "line2": null,
+    "postalCode": null,
+    "state": null
+  },
+  "createdAt": "2022-06-12T21:21:10.587Z",
+  "description": "Cliente creado para demostración",
+  "email": "email@onvopay.com",
+  "mode": "test",
+  "name": "Nombre del cliente",
+  "phone": null,
+  "shipping": {
+    "name": null,
+    "phone": null,
+    "address": {
+      "city": null,
+      "country": null,
+      "line1": null,
+      "line2": null,
+      "postalCode": null,
+      "state": null
+    }
+  },
+  "updatedAt": "2022-06-12T21:21:10.587Z",
+}
+```
+
+
 ___
 ## Payment Methods
 ## Payment Intents
