@@ -146,6 +146,66 @@ ___
   "updatedAt": "2022-06-12T21:21:10.587Z",
 }
 ```
+### Crear un Cliente
+
+#### Parámetros
+
+___
+##### address _optional_
+La dirección del cliente.
+
+**Parámetros:**
+###### address.city _optional_
+Nombre de ciudad o pueblo.
+###### address.country _optional_
+El código de país en dos caracteres (ISO 3166-1 alpha-2).
+###### address.line1 _optional_
+Primera línea de la dirección. (Ej: Calle, nombre de empresa).
+###### address.line2 _optional_
+Segunda línea de la dirección. (Ej: Edificio, apartamento, número de casa).
+###### address.postalCode _optional_
+Código postal o código ZIP.
+###### address.state _optional_
+Estado, provincia o región.
+
+___
+##### description _optional_
+Texto arbitrario adjunto al objecto. Comúnmente útil para mostrar a usuarios.
+___
+##### email _optional_
+La dirección de correo electrónico del cliente.
+___
+##### name _optional_
+El nombre completo del cliente
+___
+##### phone _optional_
+El número de teléfono del cliente, incluyendo código de área (Ej: +50688880000)
+___
+##### shipping _optional_
+La dirección de entrega a domicilio del cliente.
+
+**Parámetros:**
+###### shipping.address.city _optional_
+Nombre de ciudad o pueblo.
+###### shipping.address.country _optional_
+El código de país en dos caracteres (ISO 3166-1 alpha-2).
+###### shipping.address.line1 _optional_
+Primera línea de la dirección. (Ej: Calle, nombre de empresa).
+###### shipping.address.line2 _optional_
+Segunda línea de la dirección. (Ej: Edificio, apartamento, número de casa).
+###### shipping.address.postalCode _optional_
+Código postal o código ZIP.
+###### shipping.address.state _optional_
+Estado, provincia o región.
+###### shipping.name _optional_
+Nombre del cliente.
+###### shipping.phone_optional_
+Teléfono del cliente (incluyendo extensión).
+
+**Retorna:**
+Retorna el objeto de Cliente, si la creación fue satisfactoria. Retorna un error si los parámetros son inválidos (Ej: Enviando `Costa Rica` en lugar de `CR`, para el parámetro de `address.country`).
+
+___
 ## Payment Methods
 ## Payment Intents
 ## Subscriptions
