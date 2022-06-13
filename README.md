@@ -72,9 +72,8 @@ Código postal o código ZIP.
 ###### address.state _string_
 Estado, provincia o región.
 ___
-
-##### lastTransactionAt _datetime_
-Fecha y hora en UTC de la última transacción satisfactoria del cliente.
+##### amountSpent _integer_
+El monto total, en USD y en centavos/céntimos, acumulado de transacciones satisfactorias del cliente.
 
 ___
 ##### createdAt _datetime_
@@ -85,6 +84,9 @@ Texto arbitrario adjunto al objecto. Comúnmente útil para mostrar a usuarios.
 ___
 ##### email _string_
 La dirección de correo electrónico del cliente.
+___
+##### lastTransactionAt _datetime_
+Fecha y hora en UTC de la última transacción satisfactoria del cliente.
 ___
 ##### mode _string_
 El modo en el que existen los datos del objecto. Ya sea `test` o `live`.
@@ -126,7 +128,6 @@ ___
 ```json 
 {
   "id": "string",
-  "amountSpent": 0,
   "address": {
     "city": "string",
     "country": "string",
@@ -135,6 +136,7 @@ ___
     "postalCode": "string",
     "state": "string"
   },
+  "amountSpent": 0,
   "createdAt": "2022-06-12T21:21:10.587Z",
   "description": "string",
   "email": "string",
@@ -246,9 +248,11 @@ Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcdu
     "postalCode": null,
     "state": null
   },
+  "amountSpent": 0,
   "createdAt": "2022-06-12T21:21:10.587Z",
   "description": "Cliente creado para demostración",
   "email": "email@onvopay.com",
+  "lastTransactionAt": null,
   "mode": "test",
   "name": "Nombre del cliente",
   "phone": null,
@@ -264,6 +268,7 @@ Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcdu
       "state": null
     }
   },
+  "transactionsCount": 0,
   "updatedAt": "2022-06-12T21:21:10.587Z",
 }
 ```
@@ -298,9 +303,11 @@ Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcdu
     "postalCode": null,
     "state": null
   },
+  "amountSpent": 0,
   "createdAt": "2022-06-12T21:21:10.587Z",
   "description": "Cliente creado para demostración",
   "email": "email@onvopay.com",
+  "lastTransactionAt": null,
   "mode": "test",
   "name": "Nombre del cliente",
   "phone": null,
@@ -316,6 +323,7 @@ Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcdu
       "state": null
     }
   },
+  "transactionsCount": 0,
   "updatedAt": "2022-06-12T21:21:10.587Z",
 }
 ```
@@ -404,9 +412,11 @@ Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcdu
     "postalCode": null,
     "state": null
   },
+  "amountSpent": 0,
   "createdAt": "2022-06-12T21:21:10.587Z",
   "description": "Cliente creado para demostración",
   "email": "email@onvopay.com",
+  "lastTransactionAt": null,
   "mode": "test",
   "name": "Nombre del cliente actualizado",
   "phone": null,
@@ -422,6 +432,7 @@ Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcdu
       "state": null
     }
   },
+  "transactionsCount": 0,
   "updatedAt": "2022-06-12T21:49:20.129Z",
 }
 ```
@@ -508,9 +519,11 @@ Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcdu
         "postalCode": null,
         "state": null
       },
+      "amountSpent": 0,
       "createdAt": "2022-06-12T21:21:10.587Z",
       "description": "Cliente creado para demostración",
       "email": "email@onvopay.com",
+      "lastTransactionAt": null,
       "mode": "test",
       "name": "Nombre del cliente actualizado",
       "phone": null,
@@ -526,6 +539,7 @@ Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcdu
           "state": null
         },
       },
+      "transactionsCount": 0,
       "updatedAt": "2022-06-12T21:49:20.129Z",
     },
     { ... },
