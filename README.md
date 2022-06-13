@@ -438,6 +438,97 @@ Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcdu
   "deleted": true
 }
 ```
+### Listar todos los clientes
+```
+GET /v1/customers
+```
+#### Parámetros
+
+##### createdAt _optional_
+Un filtro basado en el atributo de `createdAt`
+
+**Parámetros:**
+###### createdAt.gt _optional_
+Retorna los resultados donde `createdAt` es mayor que el valor enviado. 
+###### createdAt.gte _optional_
+Retorna los resultados donde `createdAt` es mayor o igual que el valor enviado. 
+###### createdAt.lt _optional_
+Retorna los resultados donde `createdAt` es menor que el valor enviado. 
+###### createdAt.lte _optional_
+Retorna los resultados donde `createdAt` es menor o igual que el valor enviado. 
+
+___
+##### email _optional_
+Un filtro de la lista basado en el correo electrónico del cliente. El valor debe de ser `string`.
+___
+##### endingBefore _optional_
+Un cursor usado para paginación. `endingBefore` es el id de un objecto de Cliente que define el punto actual en la lista. Por ejemplo, si hacés una solicitud que recibe 100 objetos, empezando con un objeto de id `cl40muorw00493ndp0okzk2g3`, la solicitud siguiente puede incluir `endingBefore=cl40muorw00493ndp0okzk2g3` para obtener la anterior página de la lista. 
+___
+
+##### limit _optional_
+Un límite en la cantidad de objetos a retornar. Puede ser un valor entre 1 y 100, el valor por defecto es 10.
+___
+##### startingAfter _optional_
+Un cursor usado para paginación. `startingAfter` es el id de un objecto de Cliente que define el punto actual en la lista. Por ejemplo, si hacés una solicitud que recibe 100 objetos, terminando con un objeto de id `cl40muorw00493ndp0okzk2g3`, la solicitud siguiente puede incluir `startingAfter=cl40muorw00493ndp0okzk2g3` para obtener la siguiente página de la lista. 
+___
+**Retorna:**
+Permanentemente elimina el cliente. No se puede deshacer y automáticamente cancela cualquier suscripción activa que pueda tener el cliente.
+
+```
+GET /v1/customers?createdAt[gte]=2022-06-01T21:00:00.000Z&email=email@onvopay.com&limit=3
+Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcduXYTRtsuKRc4d1PXEh33Ju9RZRXGJkX0KsRV5-F540ciRCQosQ
+```
+```json 
+
+```
+`Respuesta:`
+```json 
+{
+  "data": [
+    {
+      "id": "cl40muorw00493ndp0okzk2g3",
+      "address": {
+        "city": null,
+        "country": "CR",
+        "line1": null,
+        "line2": null,
+        "postalCode": null,
+        "state": null
+      },
+      "createdAt": "2022-06-12T21:21:10.587Z",
+      "description": "Cliente creado para demostración",
+      "email": "email@onvopay.com",
+      "mode": "test",
+      "name": "Nombre del cliente actualizado",
+      "phone": null,
+      "shipping": {
+        "name": null,
+        "phone": null,
+        "address": {
+          "city": null,
+          "country": null,
+          "line1": null,
+          "line2": null,
+          "postalCode": null,
+          "state": null
+        },
+      },
+      "updatedAt": "2022-06-12T21:49:20.129Z",
+    },
+    { ... },
+    { ... },
+  ],
+  "meta": {
+    "total": 20,
+    "pages": 7,
+    "limit": 3,
+    "cursorNext": "cl26qre4o019801lhjl7qdj7e",
+    "cursorBefore": "cl40muorw00493ndp0okzk2g3"
+  }
+}
+```
+
+
 ___
 ## Payment Methods
 ## Payment Intents
