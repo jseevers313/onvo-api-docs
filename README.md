@@ -50,6 +50,7 @@ GET    /v1/customers
 
 #### Atributos
 
+
 ___
 ##### id _string_
 Identificador único del objeto.
@@ -70,6 +71,11 @@ Segunda línea de la dirección. (Ej: Edificio, apartamento, número de casa).
 Código postal o código ZIP.
 ###### address.state _string_
 Estado, provincia o región.
+___
+
+##### lastTransactionAt _datetime_
+Fecha y hora en UTC de la última transacción satisfactoria del cliente.
+
 ___
 ##### createdAt _datetime_
 Fecha y hora en la que fue creado el objecto en UTC. 
@@ -110,6 +116,9 @@ Nombre del cliente.
 ###### shipping.phone _string_
 Teléfono del cliente (incluyendo extensión).
 ___
+##### transactionsCount _integer_
+Conteo histórico de las transacciones satisfactorias del cliente.
+___
 ##### updatedAt _datetime_
 Fecha y hora en la que fue actualizado por última vez el objecto en UTC. 
 ___
@@ -117,6 +126,7 @@ ___
 ```json 
 {
   "id": "string",
+  "amountSpent": 0,
   "address": {
     "city": "string",
     "country": "string",
@@ -128,6 +138,7 @@ ___
   "createdAt": "2022-06-12T21:21:10.587Z",
   "description": "string",
   "email": "string",
+  "lastTransactionAt": "2022-06-12T21:21:10.587Z",
   "mode": "string",
   "name": "string",
   "phone": "string",
@@ -142,7 +153,9 @@ ___
       "postalCode": "string",
       "state": "string"
     }
+
   },
+  "transactionsCount": 0,
   "updatedAt": "2022-06-12T21:21:10.587Z",
 }
 ```
