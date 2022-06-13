@@ -147,7 +147,9 @@ ___
 }
 ```
 ### Crear un Cliente
-
+```
+POST /v1/customers
+```
 #### Parámetros
 
 ___
@@ -252,8 +254,190 @@ Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcdu
   "updatedAt": "2022-06-12T21:21:10.587Z",
 }
 ```
+### Obtener un Cliente
+```
+GET /v1/customers/:id
+```
+#### Parámetros
 
+___
+Sin parámetros.
 
+**Retorna:**
+Retorna el objeto de Client para un id válido. 
+
+```
+GET /v1/customers/cl40muorw00493ndp0okzk2g3
+Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcduXYTRtsuKRc4d1PXEh33Ju9RZRXGJkX0KsRV5-F540ciRCQosQ
+```
+```json 
+
+```
+`Respuesta:`
+```json 
+{
+  "id": "cl40muorw00493ndp0okzk2g3",
+  "address": {
+    "city": null,
+    "country": "CR",
+    "line1": null,
+    "line2": null,
+    "postalCode": null,
+    "state": null
+  },
+  "createdAt": "2022-06-12T21:21:10.587Z",
+  "description": "Cliente creado para demostración",
+  "email": "email@onvopay.com",
+  "mode": "test",
+  "name": "Nombre del cliente",
+  "phone": null,
+  "shipping": {
+    "name": null,
+    "phone": null,
+    "address": {
+      "city": null,
+      "country": null,
+      "line1": null,
+      "line2": null,
+      "postalCode": null,
+      "state": null
+    }
+  },
+  "updatedAt": "2022-06-12T21:21:10.587Z",
+}
+```
+### Actualizar un Cliente
+```
+POST /v1/customers/:id
+```
+
+Actualiza el cliente indicado usando los parámetros enviados. Parámetros no enviados no se cambiarán. 
+
+#### Parámetros
+
+___
+##### address _optional_
+La dirección del cliente.
+
+**Parámetros:**
+###### address.city _optional_
+Nombre de ciudad o pueblo.
+###### address.country _optional_
+El código de país en dos caracteres (ISO 3166-1 alpha-2).
+###### address.line1 _optional_
+Primera línea de la dirección. (Ej: Calle, nombre de empresa).
+###### address.line2 _optional_
+Segunda línea de la dirección. (Ej: Edificio, apartamento, número de casa).
+###### address.postalCode _optional_
+Código postal o código ZIP.
+###### address.state _optional_
+Estado, provincia o región.
+
+___
+##### description _optional_
+Texto arbitrario adjunto al objecto. Comúnmente útil para mostrar a usuarios.
+___
+##### email _optional_
+La dirección de correo electrónico del cliente.
+___
+##### name _optional_
+El nombre completo del cliente
+___
+##### phone _optional_
+El número de teléfono del cliente, incluyendo código de área (Ej: +50688880000)
+___
+##### shipping _optional_
+La dirección de entrega a domicilio del cliente.
+
+**Parámetros:**
+###### shipping.address.city _optional_
+Nombre de ciudad o pueblo.
+###### shipping.address.country _optional_
+El código de país en dos caracteres (ISO 3166-1 alpha-2).
+###### shipping.address.line1 _optional_
+Primera línea de la dirección. (Ej: Calle, nombre de empresa).
+###### shipping.address.line2 _optional_
+Segunda línea de la dirección. (Ej: Edificio, apartamento, número de casa).
+###### shipping.address.postalCode _optional_
+Código postal o código ZIP.
+###### shipping.address.state _optional_
+Estado, provincia o región.
+###### shipping.name _optional_
+Nombre del cliente.
+###### shipping.phone_optional_
+Teléfono del cliente (incluyendo extensión).
+
+**Retorna:**
+Retorna el objeto de Cliente, si la actualización fue satisfactoria. Retorna un error si los parámetros son inválidos (Ej: Enviando `Costa Rica` en lugar de `CR`, para el parámetro de `address.country`).
+
+```
+POST /v1/customers/cl40muorw00493ndp0okzk2g3
+Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcduXYTRtsuKRc4d1PXEh33Ju9RZRXGJkX0KsRV5-F540ciRCQosQ
+```
+```json 
+{ 
+  "name": "Nombre del cliente actualizado"
+}
+```
+`Respuesta:`
+```json 
+{
+  "id": "cl40muorw00493ndp0okzk2g3",
+  "address": {
+    "city": null,
+    "country": "CR",
+    "line1": null,
+    "line2": null,
+    "postalCode": null,
+    "state": null
+  },
+  "createdAt": "2022-06-12T21:21:10.587Z",
+  "description": "Cliente creado para demostración",
+  "email": "email@onvopay.com",
+  "mode": "test",
+  "name": "Nombre del cliente actualizado",
+  "phone": null,
+  "shipping": {
+    "name": null,
+    "phone": null,
+    "address": {
+      "city": null,
+      "country": null,
+      "line1": null,
+      "line2": null,
+      "postalCode": null,
+      "state": null
+    }
+  },
+  "updatedAt": "2022-06-12T21:49:20.129Z",
+}
+```
+### Borrar un Cliente
+```
+DELETE /v1/customers/:id
+```
+#### Parámetros
+
+___
+Sin parámetros.
+
+**Retorna:**
+Permanentemente elimina el cliente. No se puede deshacer y automáticamente cancela cualquier suscripción activa que pueda tener el cliente.
+
+```
+DELETE /v1/customers/cl40muorw00493ndp0okzk2g3
+Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcduXYTRtsuKRc4d1PXEh33Ju9RZRXGJkX0KsRV5-F540ciRCQosQ
+```
+```json 
+
+```
+`Respuesta:`
+```json 
+{
+  "id": "cl40muorw00493ndp0okzk2g3",
+  "deleted": true
+}
+```
 ___
 ## Payment Methods
 ## Payment Intents
