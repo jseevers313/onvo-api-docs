@@ -489,7 +489,7 @@ ___
 Un cursor usado para paginación. `startingAfter` es el id de un objeto de Cliente que define el punto actual en la lista. Por ejemplo, si hacés una solicitud que recibe 100 objetos, terminando con un objeto de id `cl40muorw00493ndp0okzk2g3`, la solicitud siguiente puede incluir `startingAfter=cl40muorw00493ndp0okzk2g3` para obtener la siguiente página de la lista. 
 ___
 **Retorna:**
-Permanentemente elimina el cliente. No se puede deshacer y automáticamente cancela cualquier suscripción activa que pueda tener el cliente.
+Retorna una lista de objetos de Cliente.
 
 ```
 GET /v1/customers?createdAt[gte]=2022-06-01T21:00:00.000Z&email=email@onvopay.com&limit=3
@@ -560,6 +560,7 @@ POST /v1/payment-methods
 GET /v1/payment-methods/:id
 POST /v1/payment-methods/:id
 GET /v1/payment-methods
+POST /v1/payment-methods/:id/detach
 GET /v1/customers/:customerId/payment-methods
 
 ### El objeto Método de Pago
@@ -682,14 +683,14 @@ ___
     "expMonth": 12,
     "expYear": 2022
   },
-  "createdAt": "2022-06-15T03:35:45.983Z",
+  "createdAt": "2022-06-12T21:21:10.587Z",
   "mobileNumber": {
     "maskedNumber": "string",
   },
   "mode": "string",
   "status": "string",
   "type": "string",
-  "updatedAt": "2022-06-15T03:35:46.289Z",
+  "updatedAt": "2022-06-12T21:21:10.587Z",
 }
 ```
 ### Crear un Método de Pago
@@ -800,12 +801,12 @@ Authorization: Bearer onvo_test_publishable_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoG
     "expMonth": 12,
     "expYear": 2022
   },
-  "createdAt": "2022-06-15T03:35:45.983Z",
+  "createdAt": "2022-06-12T21:21:10.587Z",
   "customerId": "cl40muorw00493ndp0okzk2g3",
   "mode": "test",
   "status": "active",
   "type": "card",
-  "updatedAt": "2022-06-15T03:35:46.289Z",
+  "updatedAt": "2022-06-12T21:21:10.587Z",
 }
 
 ```
@@ -838,12 +839,12 @@ Authorization: Bearer onvo_test_publishable_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoG
     "expMonth": 12,
     "expYear": 2022
   },
-  "createdAt": "2022-06-15T03:35:45.983Z",
+  "createdAt": "2022-06-12T21:21:10.587Z",
   "customerId": "cl40muorw00493ndp0okzk2g3",
   "mode": "test",
   "status": "active",
   "type": "card",
-  "updatedAt": "2022-06-15T03:35:46.289Z",
+  "updatedAt": "2022-06-12T21:21:10.587Z",
 }
 ```
 ### Actualizar un Método de Pago
@@ -856,108 +857,75 @@ Actualiza el método de pago indicado usando los parámetros enviados. Parámetr
 #### Parámetros
 
 ___
-##### address _optional_
-La dirección del cliente.
+##### billing _optional_
+La dirección de facturación del método de pago.
 
 **Parámetros:**
-###### address.city _optional_
+###### billing.address.city _optional_
 Nombre de ciudad o pueblo.
-###### address.country _optional_
+###### billing.address.country _optional_
 El código de país en dos caracteres (ISO 3166-1 alpha-2).
-###### address.line1 _optional_
+###### billing.address.line1 _optional_
 Primera línea de la dirección. (Ej: Calle, nombre de empresa).
-###### address.line2 _optional_
+###### billing.address.line2  _optional_
 Segunda línea de la dirección. (Ej: Edificio, apartamento, número de casa).
-###### address.postalCode _optional_
+###### billing.address.postalCode _optional_
 Código postal o código ZIP.
-###### address.state _optional_
+###### billing.address.state _optional_
 Estado, provincia o región.
-
-___
-##### description _optional_
-Texto arbitrario adjunto al objeto. Comúnmente útil para mostrar a usuarios.
-___
-##### email _optional_
-La dirección de correo electrónico del cliente.
-___
-##### name _optional_
-El nombre completo del cliente
-___
-##### phone _optional_
-El número de teléfono del cliente, incluyendo código de área (Ej: +50688880000)
-___
-##### shipping _optional_
-La dirección de entrega a domicilio del cliente.
-
-**Parámetros:**
-###### shipping.address.city _optional_
-Nombre de ciudad o pueblo.
-###### shipping.address.country _optional_
-El código de país en dos caracteres (ISO 3166-1 alpha-2).
-###### shipping.address.line1 _optional_
-Primera línea de la dirección. (Ej: Calle, nombre de empresa).
-###### shipping.address.line2 _optional_
-Segunda línea de la dirección. (Ej: Edificio, apartamento, número de casa).
-###### shipping.address.postalCode _optional_
-Código postal o código ZIP.
-###### shipping.address.state _optional_
-Estado, provincia o región.
-###### shipping.name _optional_
+###### billing.email _optional_
+Correo del cliente.
+###### billing.name _optional_
 Nombre del cliente.
-###### shipping.phone_optional_
+###### billing.phone _optional_
 Teléfono del cliente (incluyendo extensión).
+___
+##### card _optional_
+La información sobre la tarjeta de crédito o débito, requerido cuando el tipo de método de pago es `card`.
+
+**Parámetros:**
+###### card.expMonth _required_
+El mes de expiración de la tarjeta.
+###### card.expYear _required_
+El año de expiración de la tarjeta.
+___
 
 **Retorna:**
-Retorna el objeto de Cliente, si la actualización fue satisfactoria. Retorna un error si los parámetros son inválidos (Ej: Enviando `Costa Rica` en lugar de `CR`, para el parámetro de `address.country`).
+Retorna el objeto de Método de Pago, si la actualización fue satisfactoria. Retorna un error si los parámetros son inválidos (Ej: Enviando `Costa Rica` en lugar de `CR`, para el parámetro de `billing.address.country`).
 
 ```
-POST /v1/customers/cl40muorw00493ndp0okzk2g3
-Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcduXYTRtsuKRc4d1PXEh33Ju9RZRXGJkX0KsRV5-F540ciRCQosQ
+POST /v1/payment-methods/cl40muorw00493ndp0okzk2g3
+Authorization: Bearer onvo_test_publishable_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcduXYTRtsuKRc4d1PXEh33Ju9RZRXGJkX0KsRV5-F540ciRCQosQ
 ```
 ```json 
 { 
-  "name": "Nombre del cliente actualizado"
+  "card": {
+    "expYear": 2023,
+  }
 }
 ```
 `Respuesta:`
 ```json 
-{
+ {
   "id": "cl40muorw00493ndp0okzk2g3",
-  "address": {
-    "city": null,
-    "country": "CR",
-    "line1": null,
-    "line2": null,
-    "postalCode": null,
-    "state": null
+  "card": {
+    "brand": "Visa",
+    "last4": "4199",
+    "expMonth": 12,
+    "expYear": 2023
   },
-  "amountSpent": 0,
   "createdAt": "2022-06-12T21:21:10.587Z",
-  "description": "Cliente creado para demostración",
-  "email": "email@onvopay.com",
-  "lastTransactionAt": null,
+  "customerId": "cl40muorw00493ndp0okzk2g3",
   "mode": "test",
-  "name": "Nombre del cliente actualizado",
-  "phone": null,
-  "shipping": {
-    "name": null,
-    "phone": null,
-    "address": {
-      "city": null,
-      "country": null,
-      "line1": null,
-      "line2": null,
-      "postalCode": null,
-      "state": null
-    }
-  },
-  "transactionsCount": 0,
+  "status": "active",
+  "type": "card",
   "updatedAt": "2022-06-12T21:49:20.129Z",
 }
+
 ```
-### Borrar un Cliente
+### Desconectar un Método de Pago
 ```
-DELETE /v1/customers/:id
+POST /v1/payment-methods/:id/detach
 ```
 #### Parámetros
 
@@ -965,10 +933,10 @@ ___
 Sin parámetros.
 
 **Retorna:**
-Permanentemente elimina el cliente. No se puede deshacer y automáticamente cancela cualquier suscripción activa que pueda tener el cliente.
+Permanentemente desconecta el método de pago. No se puede deshacer y no se puede volver a conectar ni utilizar en futuras transacciones.
 
 ```
-DELETE /v1/customers/cl40muorw00493ndp0okzk2g3
+POST /v1/payment-methods/cl40muorw00493ndp0okzk2g3/detach
 Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcduXYTRtsuKRc4d1PXEh33Ju9RZRXGJkX0KsRV5-F540ciRCQosQ
 ```
 ```json 
@@ -978,32 +946,15 @@ Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcdu
 ```json 
 {
   "id": "cl40muorw00493ndp0okzk2g3",
-  "deleted": true
+  "status": "detached",
 }
 ```
-### Listar todos los clientes
+### Listar todos los métodos de pago de un cliente
 ```
-GET /v1/customers
+GET /v1/customers/:customerId/payment-methods
 ```
 #### Parámetros
 
-##### createdAt _optional_
-Un filtro basado en el atributo de `createdAt`
-
-**Parámetros:**
-###### createdAt.gt _optional_
-Retorna los resultados donde `createdAt` es mayor que el valor enviado. 
-###### createdAt.gte _optional_
-Retorna los resultados donde `createdAt` es mayor o igual que el valor enviado. 
-###### createdAt.lt _optional_
-Retorna los resultados donde `createdAt` es menor que el valor enviado. 
-###### createdAt.lte _optional_
-Retorna los resultados donde `createdAt` es menor o igual que el valor enviado. 
-
-___
-##### email _optional_
-Un filtro de la lista basado en el correo electrónico del cliente. El valor debe de ser `string`.
-___
 ##### endingBefore _optional_
 Un cursor usado para paginación. `endingBefore` es el id de un objeto de Cliente que define el punto actual en la lista. Por ejemplo, si hacés una solicitud que recibe 100 objetos, empezando con un objeto de id `cl40muorw00493ndp0okzk2g3`, la solicitud siguiente puede incluir `endingBefore=cl40muorw00493ndp0okzk2g3` para obtener la anterior página de la lista. 
 ___
@@ -1015,10 +966,10 @@ ___
 Un cursor usado para paginación. `startingAfter` es el id de un objeto de Cliente que define el punto actual en la lista. Por ejemplo, si hacés una solicitud que recibe 100 objetos, terminando con un objeto de id `cl40muorw00493ndp0okzk2g3`, la solicitud siguiente puede incluir `startingAfter=cl40muorw00493ndp0okzk2g3` para obtener la siguiente página de la lista. 
 ___
 **Retorna:**
-Permanentemente elimina el cliente. No se puede deshacer y automáticamente cancela cualquier suscripción activa que pueda tener el cliente.
+Permanentemente un listado con los métodos de pago del cliente.
 
 ```
-GET /v1/customers?createdAt[gte]=2022-06-01T21:00:00.000Z&email=email@onvopay.com&limit=3
+GET /v1/customers/cl40muorw00493ndp0okzk2g/payment-methods&limit=3
 Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcduXYTRtsuKRc4d1PXEh33Ju9RZRXGJkX0KsRV5-F540ciRCQosQ
 ```
 ```json 
@@ -1028,45 +979,27 @@ Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcdu
 ```json 
 {
   "data": [
-    {
+     {
       "id": "cl40muorw00493ndp0okzk2g3",
-      "address": {
-        "city": null,
-        "country": "CR",
-        "line1": null,
-        "line2": null,
-        "postalCode": null,
-        "state": null
+      "card": {
+        "brand": "Visa",
+        "last4": "4199",
+        "expMonth": 12,
+        "expYear": 2023
       },
-      "amountSpent": 0,
       "createdAt": "2022-06-12T21:21:10.587Z",
-      "description": "Cliente creado para demostración",
-      "email": "email@onvopay.com",
-      "lastTransactionAt": null,
+      "customerId": "cl40muorw00493ndp0okzk2g3",
       "mode": "test",
-      "name": "Nombre del cliente actualizado",
-      "phone": null,
-      "shipping": {
-        "name": null,
-        "phone": null,
-        "address": {
-          "city": null,
-          "country": null,
-          "line1": null,
-          "line2": null,
-          "postalCode": null,
-          "state": null
-        },
-      },
-      "transactionsCount": 0,
+      "status": "active",
+      "type": "card",
       "updatedAt": "2022-06-12T21:49:20.129Z",
-    },
+    }
     { ... },
     { ... },
   ],
   "meta": {
-    "total": 20,
-    "pages": 7,
+    "total": 5,
+    "pages": 2,
     "limit": 3,
     "cursorNext": "cl26qre4o019801lhjl7qdj7e",
     "cursorBefore": "cl40muorw00493ndp0okzk2g3"
