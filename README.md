@@ -28,7 +28,7 @@ Todos las solicitudes al API deben de hacerse mediante HTTPS. Solicitudes median
 
 ## Paginación
 
-## Clientes
+## Customers
 
 Este objeto representa un cliente de tu comercio. Te permite crear cargos recurrentes y rastrear pagos que pertenecen al mismo cliente. 
 
@@ -39,7 +39,7 @@ POST   /v1/customers/:id
 DELETE /v1/customers/:id
 GET    /v1/customers
 
-### El objeto Cliente
+### El objeto Customer
 
 #### Atributos
 
@@ -154,7 +154,7 @@ ___
   "updatedAt": "2022-06-12T21:21:10.587Z",
 }
 ```
-### Crear un Cliente
+### Crear un Customer
 ```
 POST /v1/customers
 ```
@@ -265,7 +265,7 @@ Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcdu
   "updatedAt": "2022-06-12T21:21:10.587Z",
 }
 ```
-### Obtener un Cliente
+### Obtener un Customer
 ```
 GET /v1/customers/:id
 ```
@@ -320,7 +320,7 @@ Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcdu
   "updatedAt": "2022-06-12T21:21:10.587Z",
 }
 ```
-### Actualizar un Cliente
+### Actualizar un Customer
 ```
 POST /v1/customers/:id
 ```
@@ -429,7 +429,7 @@ Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcdu
   "updatedAt": "2022-06-12T21:49:20.129Z",
 }
 ```
-### Borrar un Cliente
+### Borrar un Customer
 ```
 DELETE /v1/customers/:id
 ```
@@ -550,7 +550,469 @@ Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcdu
 
 
 ___
-## Métodos de pago
+## Payment Methods
+
+Este objeto representa los métodos de pago de tus clientes. Podés usar `Payment Intents` para cobrar pagos o para asociarlos a un cliente y usarlos en el futuro.
+
+### Endpoints
+
+POST /v1/payment-methods
+GET /v1/payment-methods/:id
+POST /v1/payment-methods/:id
+GET /v1/payment-methods
+POST /v1/payment-methods/:id/detach
+GET /v1/customers/:customerId/payment-methods
+
+### El objeto Payment Method
+
+#### Atributos
+
+
+___
+##### id _string_
+Identificador único del objeto.
+___
+##### bankAccount _hash_
+La información sobre la cuenta IBAN, cuando el tipo de método de pago es `bank_account`.
+
+**Atributos:**
+###### bankAccount.currency _string_
+La moneda de la cuenta bancaria. Puede ser `CRC` o `USD`.
+###### bankAccount.entity _string_
+El nombre de la entidad bancaria a la que pertenece la cuenta.
+###### bankAccount.maskedIBAN _string_
+El número de la cuenta IBAN, con los dígitos parcialmente ocultos.
+___
+##### billing _hash_
+La dirección de facturación del método de pago.
+
+**Atributos:**
+###### billing.address.city _string_
+Nombre de ciudad o pueblo.
+###### billing.address.country _string_
+El código de país en dos caracteres (ISO 3166-1 alpha-2).
+###### billing.address.line1 _string_
+Primera línea de la dirección. (Ej: Calle, nombre de empresa).
+###### billing.address.line2 _string_
+Segunda línea de la dirección. (Ej: Edificio, apartamento, número de casa).
+###### billing.address.postalCode _string_
+Código postal o código ZIP.
+###### billing.address.state _string_
+Estado, provincia o región.
+###### billing.email _string_
+Correo del cliente.
+###### billing.name _string_
+Nombre del cliente.
+###### billing.phone _string_
+Teléfono del cliente (incluyendo extensión).
+___
+##### card _hash_
+La información sobre la tarjeta de crédito o débito, cuando el tipo de método de pago es `card`.
+
+**Atributos:**
+###### card.brand _string_
+El nombre de la marca de la tarjeta. Puede ser `visa` o `mastercard`.
+###### card.expMonth _string_
+El mes de expiración de la tarjeta.
+###### card.expYear _string_
+El año de expiración de la tarjeta.
+###### card.last4 _string_
+Los últimos cuatro dígitos del número de la tarjeta.
+___
+##### createdAt _datetime_
+Fecha y hora, en UTC, en la que fue creado el objeto. 
+___
+___
+##### customerId _string_
+Identificador del `Customer` al que pertenece el método de pago.
+##### mobileNumber _hash_
+La información sobre el número para SINPE Móvil, cuando el tipo de método de pago es `mobile_number`.
+
+**Atributos:**
+###### mobileNumber.maskedNumber _string_
+El número de teléfono, con los dígitos parcialmente ocultos.
+___
+##### mode _string_
+El modo en el que existen los datos del objeto. Ya sea `test` o `live`.
+___
+##### status _string_
+El estado actual del método de pago. Puede ser uno de los siguientes:
+
+A la espera de autorización automática: `awaiting_authorization`. Es un estado para los métodos de pago de tipo `bank_account`. Es determinado por un proceso que se concreta automáticamente, sin necesidad de intervención del usuario. Una vez concretado, el estado cambia a `active` o `requires_verification`, si aún no ha sido verificado. 
+
+Requiere verificación: `requires-verification`. Es un estado para los métodos de pago de tipo `bank_account`. Estos métodos de pago requieren que el cliente verifique su cuenta bancaria antes de que se pueda realizar una transacción, como medida de seguridad para proteger la cuenta bancaria ante usos fraudulentos.
+
+Activo: `active`: Es el estado en el que los métodos de pago pueden ser utilizados para realizar transacciones. Es el estado por defecto para los métodos de pago de tipo `mobile_number` y `card`.
+
+Detached: `detached`. Es el estado en el que quedan los métodos de pago luego de haber sido removidos de un cliente. Este estatus es irreversible y el método de pago no se puede volver a utilizar.
+
+Suspended: `suspended`. Es un estado para los métodos de pago que han recibido una suspensión por parte de la plataforma. Estos métodos de pago no pueden ser utilizados para realizar transacciones.
+___
+
+##### type _string_
+El tipo de método de pago. Puede ser uno de los siguientes:
+Tarjetas de crédito/débito VISA o MASTERCARD: `card`
+SINPE IBAN: `bank_account`
+SINPE Móvil: `mobile_number`
+___
+##### updatedAt _datetime_
+Fecha y hora, en UTC, en la que fue actualizado por última vez el objeto. 
+___
+
+```json 
+{
+  "id": "string",
+  "bankAccount": {
+    "currency": "string",
+    "entity": "string",
+    "maskedIBAN": "string"
+  },
+  "billing": {
+    "address": {
+      "city": "string",
+      "country": "string",
+      "line1": "string",
+      "line2": "string",
+      "postalCode": "string",
+      "state": "string"
+    },
+    "email": "string",
+    "name": "string",
+    "phone": "string",
+  },
+  "card": {
+    "brand": "string",
+    "last4": "string",
+    "expMonth": 12,
+    "expYear": 2022
+  },
+  "createdAt": "2022-06-12T21:21:10.587Z",
+  "mobileNumber": {
+    "maskedNumber": "string",
+  },
+  "mode": "string",
+  "status": "string",
+  "type": "string",
+  "updatedAt": "2022-06-12T21:21:10.587Z",
+}
+```
+### Crear un Payment Method
+```
+POST /v1/payment-methods
+```
+
+#### Parámetros
+
+___
+##### bankAccount _optional_
+La información sobre la cuenta IBAN, requerido cuando el tipo de método de pago es `bank_account`.
+
+**Atributos:**
+###### bankAccount.identification _required_
+El número de identificación asociado a la cuenta SINPE. 
+___
+###### bankAccount.identificationType _required_
+El tipo de identificación asociado a la cuenta SINPE. 
+___
+###### bankAccount.IBAN _required_
+El número de la cuenta IBAN.
+___
+##### billing _optional_
+La dirección de facturación del método de pago.
+
+**Parámetros:**
+###### billing.address.city _optional_
+Nombre de ciudad o pueblo.
+###### billing.address.country _optional_
+El código de país en dos caracteres (ISO 3166-1 alpha-2).
+###### billing.address.line1 _optional_
+Primera línea de la dirección. (Ej: Calle, nombre de empresa).
+###### billing.address.line2  _optional_
+Segunda línea de la dirección. (Ej: Edificio, apartamento, número de casa).
+###### billing.address.postalCode _optional_
+Código postal o código ZIP.
+###### billing.address.state _optional_
+Estado, provincia o región.
+###### billing.email _optional_
+Correo del cliente.
+###### billing.name _optional_
+Nombre del cliente.
+###### billing.phone _optional_
+Teléfono del cliente (incluyendo extensión).
+___
+##### card _optional_
+La información sobre la tarjeta de crédito o débito, requerido cuando el tipo de método de pago es `card`.
+
+**Parámetros:**
+###### card.holderName _required_
+El nombre del titular de la tarjeta.
+###### card.expMonth _required_
+El mes de expiración de la tarjeta.
+###### card.expYear _required_
+El año de expiración de la tarjeta.
+###### card.number _required_
+El número de la tarjeta de crédito o débito.
+___
+##### customerId _optional_
+Identificador del `Customer` al que pertenece el método de pago. Si no se indica, se creará un nuevo `Customer` y el método de pago se asociará a él.
+##### mobileNumber _optional_
+La información sobre el número para SINPE Móvil, requerido cuando el tipo de método de pago es `mobile_number`.
+
+**Parámetros:**
+###### mobileNumber.identification _required_
+El número de identificación asociado a la cuenta de SINPE Móvil. 
+___
+###### mobileNumber.identificationType _required_
+El tipo de identificación asociado a la cuenta de SINPE Móvil. 
+___
+###### mobileNumber.number _required_
+El número de teléfono asociado a SINPE Móvil.
+___
+##### type _required_
+El tipo de método de pago. Puede ser uno de los siguientes:
+Tarjetas de crédito/débito VISA o MASTERCARD: `card`
+SINPE IBAN: `bank_account`
+SINPE Móvil: `mobile_number`
+___
+
+**Retorna:**
+Retorna el objeto de Payment Method, si la creación fue satisfactoria. Retorna un error si los parámetros son inválidos (Ej: Enviando un parámetro diferente a `bank_account`, `card`,  o `mobile_number` para `type`).
+
+```
+POST /v1/payment-methods
+Authorization: Bearer onvo_test_publishable_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcduXYTRtsuKRc4d1PXEh33Ju9RZRXGJkX0KsRV5-F540ciRCQosQ
+```
+```json 
+{ 
+  "card": {
+    "cvc": "123",
+    "expMonth": 12,
+    "expYear": 2022,
+    "holderName": "Juan Pérez",
+    "number": "4242424242424242",
+  },
+  "type": "card",
+}
+```
+`Respuesta:`
+```json 
+{
+  "id": "cl40muorw00493ndp0okzk2g3",
+  "card": {
+    "brand": "Visa",
+    "last4": "4199",
+    "expMonth": 12,
+    "expYear": 2022
+  },
+  "createdAt": "2022-06-12T21:21:10.587Z",
+  "customerId": "cl40muorw00493ndp0okzk2g3",
+  "mode": "test",
+  "status": "active",
+  "type": "card",
+  "updatedAt": "2022-06-12T21:21:10.587Z",
+}
+
+```
+### Obtener un Payment Method
+```
+GET /v1/payment-methods/:id
+```
+#### Parámetros
+
+___
+Sin parámetros.
+
+**Retorna:**
+Retorna el objeto de Payment Method para un id válido. 
+
+```
+GET /v1/payment-methods/cl40muorw00493ndp0okzk2g3
+Authorization: Bearer onvo_test_publishable_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcduXYTRtsuKRc4d1PXEh33Ju9RZRXGJkX0KsRV5-F540ciRCQosQ
+```
+```json 
+
+```
+`Respuesta:`
+```json 
+ {
+  "id": "cl40muorw00493ndp0okzk2g3",
+  "card": {
+    "brand": "Visa",
+    "last4": "4199",
+    "expMonth": 12,
+    "expYear": 2022
+  },
+  "createdAt": "2022-06-12T21:21:10.587Z",
+  "customerId": "cl40muorw00493ndp0okzk2g3",
+  "mode": "test",
+  "status": "active",
+  "type": "card",
+  "updatedAt": "2022-06-12T21:21:10.587Z",
+}
+```
+### Actualizar un Payment Method
+```
+POST /v1/payment-method/:id
+```
+
+Actualiza el método de pago indicado usando los parámetros enviados. Parámetros no enviados no se cambiarán. 
+
+#### Parámetros
+
+___
+##### billing _optional_
+La dirección de facturación del método de pago.
+
+**Parámetros:**
+###### billing.address.city _optional_
+Nombre de ciudad o pueblo.
+###### billing.address.country _optional_
+El código de país en dos caracteres (ISO 3166-1 alpha-2).
+###### billing.address.line1 _optional_
+Primera línea de la dirección. (Ej: Calle, nombre de empresa).
+###### billing.address.line2  _optional_
+Segunda línea de la dirección. (Ej: Edificio, apartamento, número de casa).
+###### billing.address.postalCode _optional_
+Código postal o código ZIP.
+###### billing.address.state _optional_
+Estado, provincia o región.
+###### billing.email _optional_
+Correo del cliente.
+###### billing.name _optional_
+Nombre del cliente.
+###### billing.phone _optional_
+Teléfono del cliente (incluyendo extensión).
+___
+##### card _optional_
+La información sobre la tarjeta de crédito o débito, requerido cuando el tipo de método de pago es `card`.
+
+**Parámetros:**
+###### card.expMonth _required_
+El mes de expiración de la tarjeta.
+###### card.expYear _required_
+El año de expiración de la tarjeta.
+___
+
+**Retorna:**
+Retorna el objeto de Payment Method, si la actualización fue satisfactoria. Retorna un error si los parámetros son inválidos (Ej: Enviando `Costa Rica` en lugar de `CR`, para el parámetro de `billing.address.country`).
+
+```
+POST /v1/payment-methods/cl40muorw00493ndp0okzk2g3
+Authorization: Bearer onvo_test_publishable_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcduXYTRtsuKRc4d1PXEh33Ju9RZRXGJkX0KsRV5-F540ciRCQosQ
+```
+```json 
+{ 
+  "card": {
+    "expYear": 2023,
+  }
+}
+```
+`Respuesta:`
+```json 
+ {
+  "id": "cl40muorw00493ndp0okzk2g3",
+  "card": {
+    "brand": "Visa",
+    "last4": "4199",
+    "expMonth": 12,
+    "expYear": 2023
+  },
+  "createdAt": "2022-06-12T21:21:10.587Z",
+  "customerId": "cl40muorw00493ndp0okzk2g3",
+  "mode": "test",
+  "status": "active",
+  "type": "card",
+  "updatedAt": "2022-06-12T21:49:20.129Z",
+}
+
+```
+### Desconectar un Payment Method
+```
+POST /v1/payment-methods/:id/detach
+```
+#### Parámetros
+
+___
+Sin parámetros.
+
+**Retorna:**
+Permanentemente desconecta el método de pago. No se puede deshacer y no se puede volver a conectar ni utilizar en futuras transacciones.
+
+```
+POST /v1/payment-methods/cl40muorw00493ndp0okzk2g3/detach
+Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcduXYTRtsuKRc4d1PXEh33Ju9RZRXGJkX0KsRV5-F540ciRCQosQ
+```
+```json 
+
+```
+`Respuesta:`
+```json 
+{
+  "id": "cl40muorw00493ndp0okzk2g3",
+  "status": "detached",
+}
+```
+### Listar todos los métodos de pago de un cliente
+```
+GET /v1/customers/:customerId/payment-methods
+```
+#### Parámetros
+
+##### endingBefore _optional_
+Un cursor usado para paginación. `endingBefore` es el id de un objeto de Cliente que define el punto actual en la lista. Por ejemplo, si hacés una solicitud que recibe 100 objetos, empezando con un objeto de id `cl40muorw00493ndp0okzk2g3`, la solicitud siguiente puede incluir `endingBefore=cl40muorw00493ndp0okzk2g3` para obtener la anterior página de la lista. 
+___
+
+##### limit _optional_
+Un límite en la cantidad de objetos a retornar. Puede ser un valor entre 1 y 100, el valor por defecto es 10.
+___
+##### startingAfter _optional_
+Un cursor usado para paginación. `startingAfter` es el id de un objeto de Cliente que define el punto actual en la lista. Por ejemplo, si hacés una solicitud que recibe 100 objetos, terminando con un objeto de id `cl40muorw00493ndp0okzk2g3`, la solicitud siguiente puede incluir `startingAfter=cl40muorw00493ndp0okzk2g3` para obtener la siguiente página de la lista. 
+___
+**Retorna:**
+Permanentemente un listado con los métodos de pago del cliente.
+
+```
+GET /v1/customers/cl40muorw00493ndp0okzk2g/payment-methods&limit=3
+Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcduXYTRtsuKRc4d1PXEh33Ju9RZRXGJkX0KsRV5-F540ciRCQosQ
+```
+```json 
+
+```
+`Respuesta:`
+```json 
+{
+  "data": [
+     {
+      "id": "cl40muorw00493ndp0okzk2g3",
+      "card": {
+        "brand": "Visa",
+        "last4": "4199",
+        "expMonth": 12,
+        "expYear": 2023
+      },
+      "createdAt": "2022-06-12T21:21:10.587Z",
+      "customerId": "cl40muorw00493ndp0okzk2g3",
+      "mode": "test",
+      "status": "active",
+      "type": "card",
+      "updatedAt": "2022-06-12T21:49:20.129Z",
+    }
+    { ... },
+    { ... },
+  ],
+  "meta": {
+    "total": 5,
+    "pages": 2,
+    "limit": 3,
+    "cursorNext": "cl26qre4o019801lhjl7qdj7e",
+    "cursorBefore": "cl40muorw00493ndp0okzk2g3"
+  }
+}
+```
+
+
+___
+## Intenciones de pago
 
 Este objeto representa los métodos de pago de tus clientes
 
@@ -563,7 +1025,7 @@ GET /v1/payment-methods
 POST /v1/payment-methods/:id/detach
 GET /v1/customers/:customerId/payment-methods
 
-### El objeto Método de Pago
+### El objeto Payment Method
 
 #### Atributos
 
@@ -693,7 +1155,7 @@ ___
   "updatedAt": "2022-06-12T21:21:10.587Z",
 }
 ```
-### Crear un Método de Pago
+### Crear un Payment Method
 ```
 POST /v1/payment-methods
 ```
@@ -773,7 +1235,7 @@ SINPE Móvil: `mobile_number`
 ___
 
 **Retorna:**
-Retorna el objeto de Método de Pago, si la creación fue satisfactoria. Retorna un error si los parámetros son inválidos (Ej: Enviando un parámetro diferente a `bank_account`, `card`,  o `mobile_number` para `type`).
+Retorna el objeto de Payment Method, si la creación fue satisfactoria. Retorna un error si los parámetros son inválidos (Ej: Enviando un parámetro diferente a `bank_account`, `card`,  o `mobile_number` para `type`).
 
 ```
 POST /v1/payment-methods
@@ -810,7 +1272,7 @@ Authorization: Bearer onvo_test_publishable_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoG
 }
 
 ```
-### Obtener un Método de Pago
+### Obtener un Payment Method
 ```
 GET /v1/payment-methods/:id
 ```
@@ -820,7 +1282,7 @@ ___
 Sin parámetros.
 
 **Retorna:**
-Retorna el objeto de Método de Pago para un id válido. 
+Retorna el objeto de Payment Method para un id válido. 
 
 ```
 GET /v1/payment-methods/cl40muorw00493ndp0okzk2g3
@@ -847,7 +1309,7 @@ Authorization: Bearer onvo_test_publishable_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoG
   "updatedAt": "2022-06-12T21:21:10.587Z",
 }
 ```
-### Actualizar un Método de Pago
+### Actualizar un Payment Method
 ```
 POST /v1/payment-method/:id
 ```
@@ -891,7 +1353,7 @@ El año de expiración de la tarjeta.
 ___
 
 **Retorna:**
-Retorna el objeto de Método de Pago, si la actualización fue satisfactoria. Retorna un error si los parámetros son inválidos (Ej: Enviando `Costa Rica` en lugar de `CR`, para el parámetro de `billing.address.country`).
+Retorna el objeto de Payment Method, si la actualización fue satisfactoria. Retorna un error si los parámetros son inválidos (Ej: Enviando `Costa Rica` en lugar de `CR`, para el parámetro de `billing.address.country`).
 
 ```
 POST /v1/payment-methods/cl40muorw00493ndp0okzk2g3
@@ -923,7 +1385,7 @@ Authorization: Bearer onvo_test_publishable_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoG
 }
 
 ```
-### Desconectar un Método de Pago
+### Desconectar un Payment Method
 ```
 POST /v1/payment-methods/:id/detach
 ```
@@ -1009,7 +1471,7 @@ Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcdu
 
 
 ___
-## Payment Intents
+
 ## Subscriptions
 ## Subscription Items
 ## Prices
