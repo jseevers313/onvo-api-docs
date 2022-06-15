@@ -1012,20 +1012,20 @@ Authorization: Bearer onvo_test_secret_key_VL3ln7fwTC1DiJGvGE0H5A-XYPNJDmoGtwcdu
 
 
 ___
-## Intenciones de pago
+## Payment Intents
 
-Este objeto representa los métodos de pago de tus clientes
+Este objeto representa el proceso de una intención de pago para tu cliente.
 
 ### Endpoints
 
-POST /v1/payment-methods
-GET /v1/payment-methods/:id
-POST /v1/payment-methods/:id
-GET /v1/payment-methods
-POST /v1/payment-methods/:id/detach
-GET /v1/customers/:customerId/payment-methods
+POST /v1/payment-intents
+GET /v1/payment-intents/:id
+POST /v1/payment-intents/:id
+GET /v1/payment-intents
+POST /v1/payment-intents/:id/confirm
 
-### El objeto Payment Method
+
+### El objeto Payment Intent
 
 #### Atributos
 
@@ -1034,85 +1034,28 @@ ___
 ##### id _string_
 Identificador único del objeto.
 ___
-##### bankAccount _hash_
-La información sobre la cuenta IBAN, cuando el tipo de método de pago es `bank_account`.
-
-**Atributos:**
-###### bankAccount.currency _string_
-La moneda de la cuenta bancaria. Puede ser `CRC` o `USD`.
-###### bankAccount.entity _string_
-El nombre de la entidad bancaria a la que pertenece la cuenta.
-###### bankAccount.maskedIBAN _string_
-El número de la cuenta IBAN, con los dígitos parcialmente ocultos.
-___
-##### billing _hash_
-La dirección de facturación del método de pago.
-
-**Atributos:**
-###### billing.address.city _string_
-Nombre de ciudad o pueblo.
-###### billing.address.country _string_
-El código de país en dos caracteres (ISO 3166-1 alpha-2).
-###### billing.address.line1 _string_
-Primera línea de la dirección. (Ej: Calle, nombre de empresa).
-###### billing.address.line2 _string_
-Segunda línea de la dirección. (Ej: Edificio, apartamento, número de casa).
-###### billing.address.postalCode _string_
-Código postal o código ZIP.
-###### billing.address.state _string_
-Estado, provincia o región.
-###### billing.email _string_
-Correo del cliente.
-###### billing.name _string_
-Nombre del cliente.
-###### billing.phone _string_
-Teléfono del cliente (incluyendo extensión).
-___
-##### card _hash_
-La información sobre la tarjeta de crédito o débito, cuando el tipo de método de pago es `card`.
-
-**Atributos:**
-###### card.brand _string_
-El nombre de la marca de la tarjeta. Puede ser `visa` o `mastercard`.
-###### card.expMonth _string_
-El mes de expiración de la tarjeta.
-###### card.expYear _string_
-El año de expiración de la tarjeta.
-###### card.last4 _string_
-Los últimos cuatro dígitos del número de la tarjeta.
+##### amount _integer_
+El monto a pagar en centavos. A positive integer representing how much to charge in the smallest currency unit (e.g., 100 cents to charge 1.00 or 100 to charge ¥100, a zero-decimal currency). The minimum amount is $0.50 US or equivalent in charge currency. 
 ___
 ##### createdAt _datetime_
 Fecha y hora, en UTC, en la que fue creado el objeto. 
 ___
-##### mobileNumber _hash_
-La información sobre el número para SINPE Móvil, cuando el tipo de método de pago es `mobile_number`.
-
-**Atributos:**
-###### mobileNumber.maskedNumber _string_
-El número de teléfono, con los dígitos parcialmente ocultos.
+##### currency _string_
+La moneda en la que se paga. El valor debe ser una cadena de tres letras ISO 4217. Las monedas soportadas son: `CRC`, `USD`. 
 ___
 ##### mode _string_
 El modo en el que existen los datos del objeto. Ya sea `test` o `live`.
 ___
 ##### status _string_
-El estado actual del método de pago. Puede ser uno de los siguientes:
-
-A la espera de autorización automática: `awaiting_authorization`. Es un estado para los métodos de pago de tipo `bank_account`. Es determinado por un proceso que se concreta automáticamente, sin necesidad de intervención del usuario. Una vez concretado, el estado cambia a `active` o `requires_verification`, si aún no ha sido verificado. 
-
-Requiere verificación: `requires-verification`. Es un estado para los métodos de pago de tipo `bank_account`. Estos métodos de pago requieren que el cliente verifique su cuenta bancaria antes de que se pueda realizar una transacción, como medida de seguridad para proteger la cuenta bancaria ante usos fraudulentos.
-
-Activo: `active`: Es el estado en el que los métodos de pago pueden ser utilizados para realizar transacciones. Es el estado por defecto para los métodos de pago de tipo `mobile_number` y `card`.
-
-Detached: `detached`. Es el estado en el que quedan los métodos de pago luego de haber sido removidos de un cliente. Este estatus es irreversible y el método de pago no se puede volver a utilizar.
-
-Suspended: `suspended`. Es un estado para los métodos de pago que han recibido una suspensión por parte de la plataforma. Estos métodos de pago no pueden ser utilizados para realizar transacciones.
-___
-
-##### type _string_
-El tipo de método de pago. Puede ser uno de los siguientes:
-Tarjetas de crédito/débito VISA o MASTERCARD: `card`
-SINPE IBAN: `bank_account`
-SINPE Móvil: `mobile_number`
+El estado actual de la intención de pago. Puede ser uno de los siguientes:
+  REQUIRES_CONFIRMATION = 'requires_confirmation',
+  REQUIRES_PAYMENT_METHOD = 'requires_payment_method',
+  REQUIRES_CAPTURE = 'requires_capture',
+  SUCCEEDED = 'succeeded',
+  CANCELED = 'canceled',
+  FAILED = 'failed',
+  REFUNDED = 'refunded',
+  PARTIALLY_REFUNDED = 'partially_refunded',
 ___
 ##### updatedAt _datetime_
 Fecha y hora, en UTC, en la que fue actualizado por última vez el objeto. 
@@ -1120,39 +1063,43 @@ ___
 
 ```json 
 {
-  "id": "string",
-  "bankAccount": {
-    "currency": "string",
-    "entity": "string",
-    "maskedIBAN": "string"
-  },
-  "billing": {
-    "address": {
-      "city": "string",
-      "country": "string",
-      "line1": "string",
-      "line2": "string",
-      "postalCode": "string",
-      "state": "string"
-    },
-    "email": "string",
-    "name": "string",
-    "phone": "string",
-  },
-  "card": {
-    "brand": "string",
-    "last4": "string",
-    "expMonth": 12,
-    "expYear": 2022
-  },
-  "createdAt": "2022-06-12T21:21:10.587Z",
-  "mobileNumber": {
-    "maskedNumber": "string",
-  },
-  "mode": "string",
-  "status": "string",
-  "type": "string",
-  "updatedAt": "2022-06-12T21:21:10.587Z",
+    "id": "cl4efhj0w5820401k0a1r9lw1h",
+    "mode": "test",
+    "baseAmount": 2196,
+    "baseExchangeRate": 0.001464,
+    "amount": 1500000,
+    "currency": "CRC",
+    "description": "ONVO Payment Intent from API",
+    "status": "succeeded",
+   
+    "updatedAt": "2022-06-15T03:35:28.643Z",
+    "createdAt": "2022-06-14T17:18:33.872Z",
+    "paymentMethodId": "cl4efghtc42921201lgahlkip3r",
+    "customerId": "cl4efghrs42919801lgxe2jdn7d",
+  
+    "charges": [
+        {
+            "id": "cl4efhnnz5840601k5arij8ogi",
+            "mode": "test",
+            "baseAmount": 2196,
+            "baseExchangeRate": 0.001464,
+            "amount": 1500000,
+            "amountRefunded": 0,
+            "currency": "CRC",
+            "description": "ONVO Payment Intent from API",
+            "status": "succeeded",
+            "riskScore": 0,
+            "riskLevel": "not_assessed",
+            "statementDescriptor": "ONVO",
+            "failureCode": null,
+            "failureMessage": "",
+            "isApproved": true,
+            "isCaptured": true,
+            "isDisputed": false,
+            "isRefunded": false,
+           
+        },
+    ]
 }
 ```
 ### Crear un Payment Method
